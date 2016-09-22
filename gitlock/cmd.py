@@ -88,7 +88,7 @@ commands = {
 def main():
     parser = argparse.ArgumentParser(description="Commands for locking git files")
     parser.add_argument("command", type=str, 
-                        help="Command to run (from {0})".format(commands))
+                        help="Command to run (from {0})".format(list(commands.keys())))
     parser.add_argument('pkg', type=str,
                         help="Name of the package")
     parser.add_argument('-u', '--user', type=str, default=None,

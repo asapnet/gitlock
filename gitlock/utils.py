@@ -2,13 +2,21 @@ import os
 from collections import OrderedDict
 import errno
 
+def get_full_path(path):
+    """
+    If a ~ is present in the path, expand it. Return the absolute path to a (potentially) relative path.
+    """
+    if path is None:
+        return None
+    return os.path.abspath(os.path.expanduser(path))
+
 def create_path(path):
     """
     Create the path if it does not exist. 
     If a new file or directory was created return True, otherwise return false
     """
     try:
-        os.makedirs(os.path.expanduser(path))
+        os.makedirs(get_full_path(path))
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
@@ -31,7 +39,26 @@ def get_gitpath(gitpath):
         gitlock_cfg_path = get_gitlock_cfg_path()
         gitlock_config = load_config(gitlock_cfg_path)
         gitpath = gitlock_config['gitpath']
+    gitpath = get_full_path(gitpath)
     return gitpath
+
+def get_gitlock_cfg_path():
+    """
+    Location of the gitlock configuration file
+    """
+    return get_full_path(os.path.join('~', '.gitlock', 'gitlock.cfg'))
+
+def get_config_path(gitpath, pkg):
+    """
+    Load the path to a configuration file
+    """
+    return get_full_path(os.path.join(gitpath, 'repos', pkg, 'locks.cfg'))
+
+def get_lockfile_path(gitpath, pkg):
+    """
+    Load the path to a lockfile
+    """
+    return get_full_path(os.path.join(gitpath, 'repos', pkg, 'locks.txt'))
 
 def load_config(path):
     """
@@ -42,38 +69,20 @@ def load_config(path):
         config = yaml.load(file)
     return config
 
-def get_gitlock_cfg_path():
-    """
-    Location of the gitlock configuration file
-    """
-    return os.path.expanduser(os.path.join('~', '.gitlock', 'gitlock.cfg'))
-
-def get_config_path(gitpath, pkg):
-    """
-    Load the path to a configuration file
-    """
-    return os.path.join(gitpath, 'repos', pkg, 'locks.cfg')
-
-def get_lockfile_path(gitpath, pkg):
-    """
-    Load the path to a lockfile
-    """
-    return os.path.join(gitpath, 'repos', pkg, 'locks.txt')
-
 def edit_git_cfg(gitpath, user):
     """
     Create or edit the gitlock configuration file
     """
     import yaml
     config_path = get_gitlock_cfg_path()
-    new_cfg = create_path(os.path.dirname(config_path))
+    create_path(os.path.dirname(config_path))
     if os.path.isfile(config_path):
         config = load_config(config_path)
     else:
         config = OrderedDict()
     
     # Update any config fields that have been specified
-    config['gitpath'] = gitpath
+    config['gitpath'] = get_full_path(gitpath)
     if user is not None:
         config['user'] = user
     with open(config_path, 'w+') as stream:
@@ -88,7 +97,7 @@ def edit_lock_cfg(pkg, gitpath=None, pkg_path=None, user=None):
     
     gitpath = get_gitpath(gitpath)
     config_path = get_config_path(gitpath, pkg)
-    new_cfg = create_path(os.path.dirname(config_path))
+    create_path(os.path.dirname(config_path))
     if os.path.isfile(config_path):
         config = load_config(config_path)
     else:
@@ -97,7 +106,7 @@ def edit_lock_cfg(pkg, gitpath=None, pkg_path=None, user=None):
     # Update any config fields that have been specified
     config['pkg'] = pkg
     if pkg_path is not None:
-        config['pkg_path'] = pkg_path
+        config['pkg_path'] = get_full_path(pkg_path)
     if user is not None:
         config['user'] = user
     with open(config_path, 'w+') as stream:
