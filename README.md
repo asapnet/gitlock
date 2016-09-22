@@ -16,17 +16,19 @@ user@mycpu:~/lsst/gitlock$ python setup.py install
 
 This will install the gitlock package and a ``gitlock`` command line script.
 
+It is also recommended to create a separate repository to store the lockfile. For example, https://github.com/lsst-dm/pybind11_locks stores the lockfile for the pybind11 port.
+
 # Quick Start
 
 ## Initializing the locking repo
 
-Assuming that you are in the directory `~/lsst/gitlock` and you want to put locks on the `afw` repo in `~/lsst/afw`, the package can be initialized using
+Assuming that you are in the directory `~/lsst/pybind11_locks` and you want to put locks on the `afw` repo in `~/lsst/afw`, the package can be initialized using
 ```
-user@mycpu:~/lsst/gitlock$ gitlock init afw -g . -p ../afw
+user@mycpu:~/lsst/pybind11_locks$ gitlock init afw -g . -p ../afw
 ```
 or more generally
 ```
-user@mycpu:~/lsst/gitlock$ gitlock init afw -g <gitpath> -p <pkg_path>
+gitlock init afw -g <gitpath> -p <pkg_path>
 ```
 
 The "-g" is used to specify the path to the gitlock repo (gitpath). The "-p" is used to specify the path to the repo that is being developed (in this case afw). These can either be relative or absolute paths.
