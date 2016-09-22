@@ -524,7 +524,7 @@
 "include/lsst/afw/geom/LinearTransform.h" "None" "2016-09-22 11:59:41.692949"
 "include/lsst/afw/geom/Point.h" "None" "2016-09-22 11:59:41.692949"
 "include/lsst/afw/geom/SeparableXYTransform.h" "None" "2016-09-22 11:59:41.692949"
-"include/lsst/afw/geom/Span.h" "None" "2016-09-22 11:59:41.692949"
+"include/lsst/afw/geom/Span.h" "Pim Schellart" "2016-09-22 12:23:03.556794"
 "include/lsst/afw/geom/SpanPixelIterator.h" "None" "2016-09-22 11:59:41.692949"
 "include/lsst/afw/geom/TransformMap.h" "None" "2016-09-22 11:59:41.692949"
 "include/lsst/afw/geom/TransformMapImpl.h" "None" "2016-09-22 11:59:41.692949"
