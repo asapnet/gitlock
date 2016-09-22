@@ -116,7 +116,7 @@ class Repo(object):
         idx = list(self.locks.keys()).index(lock.filename)
         with open(self.lockfile_path, 'r') as f:
             files = f.readlines()
-        old_files = files.copy()
+        old_files = files[:]
         # Replace the selected file entry with a lock
         lock.time = str(datetime.datetime.now())
         files[idx] = '"' + '" "'.join([lock.filename, lock.user, lock.time]) + '"\n'

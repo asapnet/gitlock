@@ -119,6 +119,7 @@ def create_lockfile(gitpath, pkg, pkg_path, overwrite=False, update=False):
     """
     import git
     import datetime
+    import gitlock.lock
     
     gitpath = get_gitpath(gitpath)
     if pkg_path is None:
@@ -135,9 +136,8 @@ def create_lockfile(gitpath, pkg, pkg_path, overwrite=False, update=False):
     if os.path.isfile(lockfile_path) and not overwrite and not update:
         print("The lockfile already exists for {0}".format(pkg))
     else:
+        repo = gitlock.lock.Repo(pkg, gitpath)
         if os.path.isfile(lockfile_path) and update:
-            import gitlock.lock
-            repo = gitlock.lock.Repo(pkg, gitpath)
             locks = repo.get_locked_info(display=False)
             for filename, lock in locks.items():
                 entry = '"' + '" "'.join([lock.filename, lock.user, lock.time]) + '"'
@@ -154,8 +154,11 @@ def create_lockfile(gitpath, pkg, pkg_path, overwrite=False, update=False):
             create_path(os.path.dirname(lockfile_path))
             locks = None
         # Backup the lockfile
-        with open(lockfile_path, 'r') as f:
-            old_files = f.readlines()
+        new_file = True
+        if os.path.isfile(lockfile_path):
+            new_file = False
+            with open(lockfile_path, 'r') as f:
+                old_files = f.readlines()
         # Write the lockfile
         with open(lockfile_path, 'w+') as f:
             f.write("\n".join(files))
@@ -163,7 +166,7 @@ def create_lockfile(gitpath, pkg, pkg_path, overwrite=False, update=False):
         
         # Attempt to push the changes to the remote
         error = gitlock.git_io.update_remote(commit_msg, lockfile_path, repo.lock_repo)
-        if error is not None:
+        if error is not None and not new_file:
             # Resore the lockfile if there was an error while saving
             print("Restoring lockfile")
             with open(lockfile_path, 'w+') as f:
