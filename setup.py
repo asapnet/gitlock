@@ -26,5 +26,6 @@ setup(name='gitlock',
       author_email='fred.moolekamp@gmail.com',
       license='MIT',
       packages=packages,
-      package_data=pkg_data
+      package_data=pkg_data,
+      scripts=['scripts/gitlock']
       )
