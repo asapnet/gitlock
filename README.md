@@ -4,6 +4,12 @@ This repository is for putting soft locks on files in a github repo that multipl
 
 ## Installation
 
+gitlock is dependent on the gitpython package, which can be installed using
+
+```
+pip install gitpython
+```
+
 This repo must be cloned on the local machine to work. 
 ```
 user@mycpu:~/lsst$ git clone https://github.com/lsst-dm/gitlock.git gitlock
